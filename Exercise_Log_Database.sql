@@ -1,16 +1,32 @@
+/************************************
+--Author: Jacob Schulz
+--Function: This script will create and add all data to the Exercise_Log database.
+--Execution: You can run this in its entirety by clicking the 'Execute' button.
+--Last Modified: 2018-05-15 19:37
+*************************************/
+
+/*******************************
+First, use the master database
+*******************************/
 USE master
 GO
 
-CREATE DATABASE Gen_Exercise
+/*******************************
+Create the Gen_Exercise Database
+*******************************/
+CREATE DATABASE Exercise_Log
 GO
 
-USE Gen_Exercise
+/***************************************************
+Use the Exercise_Log databse to add objects and data
+***************************************************/
+USE Exercise_Log
 GO
 
 /***************************
 Creating the Exercise table
 ***************************/
-CREATE TABLE Exercises
+CREATE TABLE dbo.Exercises
 (
 	Exercise_Id INT PRIMARY KEY IDENTITY (1,1),
 	Exercise_Name VARCHAR(40),
@@ -41,7 +57,7 @@ GO
 /**********************
 Creating the Days table
 **********************/
-CREATE TABLE Days
+CREATE TABLE dbo.Days
 (
 	Day_Id SMALLINT PRIMARY KEY IDENTITY (1,1),
 	Day VARCHAR(9)
@@ -65,7 +81,7 @@ GO
 /**********************
 Create Exercise_Log table
 **********************/
-CREATE TABLE Exercise_Log
+CREATE TABLE dbo.Exercise_Log
 (
 	Entry_Id INT PRIMARY KEY IDENTITY (1,1),
 	Day_Id SMALLINT,
@@ -85,7 +101,7 @@ GO
 /**********************
 Inserting into Exercise_Log
 **********************/
-INSERT INTO Exercise_Log 
+INSERT INTO dbo.Exercise_Log 
 (Day_Id, Exercise_Id, Week_Id, Rep_Goal, Actual_Reps, Weight_Used, Date_Performed)
 VALUES 
 	(1, 1, 1, 5, 7, 25.00, GETDATE()), --GETDATE() gets the current date and time
@@ -107,7 +123,7 @@ GO
 /**********************
 Creation of Weeks table
 **********************/
-CREATE TABLE Weeks
+CREATE TABLE dbo.Weeks
 (
 	Week_Id INT PRIMARY KEY IDENTITY (1,1),
 	Week_Number INT NOT NULL
@@ -117,7 +133,7 @@ GO
 /**********************
 Inserting into Weeks Table
 **********************/
-INSERT INTO Weeks
+INSERT INTO dbo.Weeks
 (Week_Number)
 VALUES 
 (1),(2),(3),(4),(5),(6),(7)
@@ -142,10 +158,11 @@ FROM Days AS D
 		ON D.Day_Id = EL.Day_Id
 	INNER JOIN Exercises AS E
 		ON EL.Exercise_Id = E.Exercise_Id
+GO
 
 /********************************************
 Function:
-Creates a virtual table (aka a view), helping 
+Creates a virtual table (a view), helping 
 the user identify the exercise, actual reps
 weight used and date performed in accordance
 with the week number.
@@ -162,10 +179,10 @@ SELECT
 FROM Exercise_Log
 GO
 
-/***********************
+/**********************************
 Using aggregate functions to pull 
-the max reps and weight for the week
-***********************/
+the max reps and weight for the week.
+***********************************/
 
 SELECT 
 	MAX(Actual_Reps) As Max_Reps,
@@ -176,10 +193,11 @@ GROUP BY
 	Actual_Reps, 
 	Weight_Used, 
 	Week_Id
+GO
 
 /*******************************
-Use this statement if you'd like
-to delete the exercise database.
+Use the master database if you'd
+like to drop Exercise_Log
 *******************************/
-
---DROP DATABASE Gen_Exercise
+USE master
+GO
