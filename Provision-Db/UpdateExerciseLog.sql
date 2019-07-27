@@ -1,4 +1,4 @@
-USE [Gen_Exercise]
+USE [Exercise_Log]
 GO
 
 --Needed to increase the precision for Weight_Used
